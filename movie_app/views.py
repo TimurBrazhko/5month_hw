@@ -1,13 +1,13 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from movie_app.serializers import DirectorSerializer, MovieSerializer, ReviewSerializer
+from movie_app.serializers import DirectorSerializer, MovieSerializer, ReviewSerializer, MovieReviewSerializer
 from movie_app.models import Director, Movie, Review
 
 
 @api_view(['GET'])
 def directors_list_api_view(request):
-    directors = Director.objects.all()
+    directors = Director.objects.prefetch_related('movies').all()
     data = DirectorSerializer(directors, many=True).data
     return Response(data=data)
 
@@ -44,6 +44,7 @@ def movie_detail_api_view(request, id):
     data = MovieSerializer(movie).data
     return Response(data=data)
 
+
 @api_view(['GET'])
 def review_list_api_view(request):
     review = Review.objects.all()
@@ -61,4 +62,11 @@ def review_detail_api_view(request, id):
             data={"detail": "Review not found"}
         )
     data = ReviewSerializer(review).data
+    return Response(data=data)
+
+
+@api_view(['GET'])
+def review_movie_api_view(request):
+    movies = Movie.objects.select_related('director').prefetch_related('reviews').all()
+    data = MovieReviewSerializer(movies, many=True).data
     return Response(data=data)

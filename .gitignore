@@ -1,6 +1,8 @@
 .idea
 db.sqlite3
 static
+.env
+
 
 # Created by https://www.toptal.com/developers/gitignore/api/python,django
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,django
